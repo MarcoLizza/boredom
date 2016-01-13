@@ -6,16 +6,25 @@ local _dampening = 0
 function love.load(args)
   if args[#args] == "-debug" then require("mobdebug").start() end
 
+  love.filesystem.setIdentity('D:\anorak')
+
   love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
   _world:initialize()
   _player:initialize(_world)
 end
 
+function love.keypressed(key, scancode, isrepeat)
+  if key == 'f12' then
+    local screenshot = love.graphics.newScreenshot()
+    screenshot:encode('png', os.time() .. '.png')
+  end
+end
+
 function love.update(dt)
   _dampening = _dampening + dt
-  if _dampening >= 0.25 then
-    _dampening = _dampening - 0.25
+  if _dampening >= 0.125 then
+    _dampening = _dampening - 0.125
     _player:input()
     _world:input()
   end
