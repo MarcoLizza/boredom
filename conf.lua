@@ -1,12 +1,12 @@
-local _constants = require("constants")
+local constants = require('constants')
 
 function love.conf(configuration)
-  configuration.version = "0.10.0"
+  configuration.version = '0.10.0'
   configuration.console = false
 
-  configuration.window.title = _constants.WINDOW_TITLE
-  configuration.window.width = _constants.WINDOW_WIDTH
-  configuration.window.height = _constants.WINDOW_HEIGHT
+  configuration.window.title = constants.WINDOW_TITLE
+  configuration.window.width = constants.WINDOW_WIDTH
+  configuration.window.height = constants.WINDOW_HEIGHT
 
   configuration.window.display = 2
 

@@ -1,5 +1,3 @@
-local _constants = require("constants")
-
 local player = {
   x = 0,
   y = 0,
@@ -12,16 +10,16 @@ function player.input(self)
   local x = math.floor(self.x / 16)
   local y = math.floor(self.y / 16)
   
-  if love.keyboard.isDown("left") then
+  if love.keyboard.isDown('left') then
     x = x - 1
   end
-  if love.keyboard.isDown("right") then
+  if love.keyboard.isDown('right') then
     x = x + 1
   end
-  if love.keyboard.isDown("up") then
+  if love.keyboard.isDown('up') then
     y = y - 1
   end
-  if love.keyboard.isDown("down") then
+  if love.keyboard.isDown('down') then
     y = y + 1
   end
 
@@ -54,7 +52,7 @@ end
 
 function player.draw(self)
   love.graphics.setColor(255, 255, 255)
-  love.graphics.rectangle("fill", self.x * 3, self.y * 3, 16 * 3, 16 * 3)
+  love.graphics.rectangle('fill', self.x * 3, self.y * 3, 16 * 3, 16 * 3)
 end
 
 return player
