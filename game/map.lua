@@ -1,4 +1,5 @@
-local constants = require('constants')
+local constants = require('game.constants')
+local utils = require('lib.utils')
 
 -- @module world
 local map = {
@@ -15,13 +16,24 @@ local map = {
     width = 16,
     height = 16,
     --
-    set = {},
+    sheet = {},
     atlas = nil,
     batches = {}
   }
 }
 
-function map.walkable(self, x, y)
+function map.to_map(self, x, y)
+  local tiles = self.tiles
+  return math.floor(x / tiles.width), math.floor(y / tiles.height)
+end
+
+function map.to_screen(self, x, y)
+  local tiles = self.tiles
+  return x * tiles.width, y * tiles.height
+end
+
+function map.is_walkable(self, x, y)
+  -- Always remember that tables indexes start from one! :\
   if self.layers.walkables[y + 1][x + 1] ~= -1 then
     return true
   else
@@ -32,24 +44,13 @@ end
 function map.initialize(self)
   local tiles = self.tiles
 
-  tiles.atlas = love.graphics.newImage('assets/tileset.png')
+  tiles.sheet, tiles.atlas = utils.load_atlas('assets/tileset.png', tiles.width, tiles.height)
 
-  -- The tiles are organized in the tileset in a single row, so we can get
-  -- dynamically the amount of tiles with a simple division.
-  local columns = tiles.atlas:getWidth() / tiles.width
-  local rows = tiles.atlas:getHeight() / tiles.height
-  for i = 1, rows do
-    for j = 1, columns do
-      table.insert(tiles.set,
-        love.graphics.newQuad((j - 1) * tiles.width, (i - 1) * tiles.height, tiles.width, tiles.width,
-        tiles.atlas:getWidth(), tiles.atlas:getHeight()))
-    end
-  end
-
+  -- Once the atlas and the tileset
   -- We are creating sprite-batch for each layer so that the occlusion can be handled.
   -- The batches can contain as much as the amount of tiles present in the map.
-  for i = 1, #map.layers.levels do
-    tiles.batches[i] = love.graphics.newSpriteBatch(tiles.atlas, tiles.width * tiles.height)
+  for i = 1, #self.layers.levels do
+    tiles.batches[i] = love.graphics.newSpriteBatch(tiles.sheet, self.width * self.height)
   end
 end
 
@@ -60,7 +61,7 @@ function map.update(self, dt)
   local layers = self.layers
   local viewport = self.viewport
   local tiles = self.tiles
-  local set = tiles.set
+  local atlas = tiles.atlas
 
   for level, cells in ipairs(layers.levels) do
     local batch = tiles.batches[level]
@@ -71,7 +72,7 @@ function map.update(self, dt)
         local x = (j - 1) * tiles.width
         local cell = cells[i][j] + 1
         if cell ~= 0 then -- exclude 'zeroed' cells
-          batch:add(set[cell], x, y)
+          batch:add(atlas[cell], x, y)
         end
       end
     end

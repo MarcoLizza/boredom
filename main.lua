@@ -1,11 +1,9 @@
-local _world = require('world')
+local _world = require('game.world')
 
 local _dampening = 0
 
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
-
-  love.filesystem.setIdentity('D:\anorak')
 
   love.graphics.setDefaultFilter('nearest', 'nearest', 0)
 
@@ -15,7 +13,7 @@ end
 function love.keypressed(key, scancode, isrepeat)
   if key == 'f12' then
     local screenshot = love.graphics.newScreenshot()
-    screenshot:encode('png', 'screenshot.png')
+    screenshot:encode('png', os.time() .. '.png')
   end
 end
 

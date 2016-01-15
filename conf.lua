@@ -1,6 +1,7 @@
-local constants = require('constants')
+local constants = require('game.constants')
 
 function love.conf(configuration)
+  configuration.identity = 'anorak'
   configuration.version = '0.10.0'
   configuration.console = false
 
