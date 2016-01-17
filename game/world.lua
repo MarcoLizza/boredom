@@ -4,7 +4,7 @@ local utils = require('lib.utils')
 local world = {
   map = require('game.map'),
   player = require('game.player'),
-  time = 0,
+  time = 8 * 60 * 60,
   speed = 48.0
 }
 
