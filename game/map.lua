@@ -19,7 +19,8 @@ local map = {
     sheet = {},
     atlas = nil,
     batches = {}
-  }
+  },
+  has_changed = true
 }
 
 function map.to_map(self, x, y)
@@ -52,19 +53,19 @@ function map.initialize(self)
   for i = 1, #self.layers.levels do
     tiles.batches[i] = love.graphics.newSpriteBatch(tiles.sheet, self.width * self.height)
   end
-  
---  self.shader = love.graphics.newShader('shaders/modulate.glsl')
---  self.shader:send('_chroma', { 0.0, 1.0, 0.0 });
+
   self.shader = love.graphics.newShader('shaders/outline.glsl')
   self.shader:send('_step', { 1 / tiles.sheet:getWidth(), 1 / tiles.sheet:getHeight() });
---  self.shader = love.graphics.newShader('shaders/glow.glsl')
---  self.shader:send('_size', { tiles.width, tiles.height });
 end
 
 function map.input(self)
 end
 
 function map.update(self, dt)
+  if not self.has_changed then
+    return
+  end
+  
   local layers = self.layers
   local viewport = self.viewport
   local tiles = self.tiles
@@ -85,6 +86,8 @@ function map.update(self, dt)
     end
     batch:flush()
   end
+  
+  self.has_changed = false
 end
 
 function map.draw(self, draw)
