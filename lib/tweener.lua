@@ -6,16 +6,15 @@ local tweener = {
 -- and [to] in [time] seconds. Internally accumulates the current time upon each
 -- subsequent call. Returns both the interpolated value and a boolean telling
 -- wether the tweening has ended.
-function tweener.linear(from, to, time)
+function tweener.linear(time, callback)
   local current = 0
-  local delta = to - from
   return function(dt)
     current = current + dt
-    if current >= time then
-      return to, true
-    else
-      return delta * current / time + from, false
+    if current > time then
+      current = time
     end
+    local ratio = current / time
+    return callback(ratio), current < time
   end
 end
 

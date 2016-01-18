@@ -21,7 +21,7 @@ end
 function world.update(self, dt)
   self.map:update(dt)
   self.player:update(dt)
-  
+
   self.time = self.time + (dt * self.speed)
 end
 
