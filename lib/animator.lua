@@ -1,17 +1,25 @@
-local animator = {
-  animations = { },
+-- http://lua-users.org/wiki/ObjectOrientationTutorial
+local Animator = {
+  animations = {},
   period = 1 / 50,
   animation = nil,
   frame = 0,
   elapsed = 0
 }
 
-function animator:initialize(animations, frequency)
+Animator.__index = Animator
+
+function Animator.new()
+  local self = setmetatable({}, Animator)
+  return self
+end
+
+function Animator:initialize(animations, frequency)
   self.animations = animations
   self.period = 1 / frequency
 end
 
-function animator:update(dt)
+function Animator:update(dt)
   if not self.animation then
     return
   end
@@ -25,7 +33,7 @@ function animator:update(dt)
   return self.animation[self.frame]
 end
 
-function animator:switch_to(index, reset)
+function Animator:switch_to(index, reset)
   if reset or true then
     self.elapsed = 0
     self.frame = nil
@@ -37,4 +45,4 @@ function animator:switch_to(index, reset)
   end
 end
 
-return animator
+return Animator
