@@ -1,6 +1,6 @@
 local _world = require('game.world')
 
-local _dampening = 0
+--local _dampening = 0
 
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
@@ -18,11 +18,11 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-  _dampening = _dampening + dt
-  if _dampening >= 0.125 then
-    _dampening = _dampening - 0.125
+--  _dampening = _dampening + dt
+--  if _dampening >= 0.125 then
+--    _dampening = _dampening - 0.125
     _world:input()
-  end
+--  end
 
   _world:update(dt)
 end
