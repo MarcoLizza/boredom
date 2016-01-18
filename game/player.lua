@@ -1,5 +1,6 @@
 local utils = require('lib.utils')
 local tweener = require('lib.tweener')
+local Animator = require('lib.animator')
 
 local FACING_UP = 1
 local FACING_RIGHT = 2
@@ -16,11 +17,11 @@ local player = {
   width = 16,
   height = 16,
   sheet = nil,
-  atlas = { },
-  animator = require('lib.animator'),
+  atlas = {},
+  map = nil,
+  animator = Animator.new(),
   frame = nil,
   facing = FACING_RIGHT,
-  map = nil,
   --
   tweener = nil,
   offset_x = 0,
@@ -55,37 +56,42 @@ function player.input(self)
     return
   end
 
-  -- Obtain the player map-coordinates
-  local x, y = self.map:to_map(self.x, self.y)
   local facing = self.facing
-  local changed = false
-  
+
+  local delta_x = 0
+  local delta_y = 0
+
   if love.keyboard.isDown('left') then
-    x = x - 1
+    delta_x = -PIXELS_TO_MOVE
+    delta_y = 0
     facing = FACING_LEFT
-    changed = true
   end
   if love.keyboard.isDown('right') then
-    x = x + 1
+    delta_x = PIXELS_TO_MOVE
+    delta_y = 0
     facing = FACING_RIGHT
-    changed = true
   end
   if love.keyboard.isDown('up') then
-    y = y - 1
+    delta_x = 0
+    delta_y = -PIXELS_TO_MOVE
     facing = FACING_UP
-    changed = true
   end
   if love.keyboard.isDown('down') then
-    y = y + 1
+    delta_x = 0
+    delta_y = PIXELS_TO_MOVE
     facing = FACING_DOWN
-    changed = true
   end
 
-  if changed then
-    self.activity_marker = os.time()
+  if delta_x == 0 and delta_y == 0 then
+    return
   end
 
-  if changed and self.map:is_walkable(x, y) then
+  self.activity_marker = os.time()
+
+  -- Obtain the player map-coordinates
+  local x, y = self.map:to_map(self.x + delta_x, self.y + delta_y)
+
+  if self.map:is_walkable(x, y) then
     -- A change in the direction will switch to the correct animation.
     if self.facing ~= facing then
       self.animator:switch_to(facing)
@@ -93,7 +99,7 @@ function player.input(self)
     end
 
     self.tweener = tweener.linear(0.25, function(ratio) 
-        return PIXELS_TO_MOVE * ratio
+        return { delta_x * ratio, delta_y * ratio }
       end)
   end
 end
@@ -116,29 +122,14 @@ function player.update(self, dt)
   local delta, continue = self.tweener(dt)
 
   if continue then
-    if self.facing == FACING_UP then
-      self.offset_y = -delta
-    elseif self.facing == FACING_RIGHT then
-      self.offset_x = delta
-    elseif self.facing == FACING_LEFT then
-      self.offset_x = -delta
-    elseif self.facing == FACING_DOWN then
-      self.offset_y = delta
-    end
+    self.offset_x = delta[1]
+    self.offset_y = delta[2]
   else
-    self.tweener = nil
+    self.x = self.x + delta[1]
+    self.y = self.y + delta[2]
     self.offset_x = 0
     self.offset_y = 0
-
-    if self.facing == FACING_UP then
-      self.y = self.y - PIXELS_TO_MOVE
-    elseif self.facing == FACING_RIGHT then
-      self.x = self.x + PIXELS_TO_MOVE
-    elseif self.facing == FACING_LEFT then
-      self.x = self.x - PIXELS_TO_MOVE
-    elseif self.facing == FACING_DOWN then
-      self.y = self.y + PIXELS_TO_MOVE
-    end
+    self.tweener = nil
   end
 end
 

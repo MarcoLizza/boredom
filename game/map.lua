@@ -23,25 +23,6 @@ local map = {
   has_changed = true
 }
 
-function map.to_map(self, x, y)
-  local tiles = self.tiles
-  return math.floor(x / tiles.width), math.floor(y / tiles.height)
-end
-
-function map.to_screen(self, x, y)
-  local tiles = self.tiles
-  return x * tiles.width, y * tiles.height
-end
-
-function map.is_walkable(self, x, y)
-  -- Always remember that tables indexes start from one! :\
-  if self.layers.walkables[y + 1][x + 1] ~= -1 then
-    return true
-  else
-    return false
-  end
-end
-
 function map.initialize(self)
   local tiles = self.tiles
 
@@ -91,14 +72,10 @@ function map.update(self, dt)
 end
 
 function map.draw(self, draw)
-  love.graphics.setColor(63, 63, 63)
-  love.graphics.rectangle('fill', 0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
-  
   for level, batch in ipairs(self.tiles.batches) do
     if draw then
        draw(level - 1)
     end    
-    love.graphics.setColor(255, 255, 255) -- reset the drawing color not to affect sprite-batch
     love.graphics.draw(batch, 0, 0, 0,
       constants.MAGNIFICATION_FACTOR, constants.MAGNIFICATION_FACTOR)
     if level == 3 then
@@ -108,6 +85,29 @@ function map.draw(self, draw)
       love.graphics.setShader()
     end
   end
+end
+
+function map.to_map(self, x, y)
+  local tiles = self.tiles
+  return math.floor(x / tiles.width), math.floor(y / tiles.height)
+end
+
+function map.to_screen(self, x, y)
+  local tiles = self.tiles
+  return x * tiles.width, y * tiles.height
+end
+
+function map.is_walkable(self, x, y)
+  -- Always remember that tables indexes start from one! :\
+  if self.layers.walkables[y + 1][x + 1] ~= -1 then
+    return true
+  else
+    return false
+  end
+end
+
+function map:find_path(from, to)
+  local path = {}
 end
 
 return map

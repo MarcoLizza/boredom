@@ -15,7 +15,7 @@ local items = {
 }
 
 function items:collide_with(x, y)
-  local set = { }
+  local set = {}
   for _, item in ipairs(self.list)
     for _, tile in ipairs(item.tiles)
       if x == tile.x and y == tile.y then

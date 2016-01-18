@@ -4,22 +4,26 @@ local utils = require('lib.utils')
 local world = {
   map = require('game.map'),
   player = require('game.player'),
+  cursor = require('game.cursor'),
   time = 8 * 60 * 60,
   speed = 48.0
 }
 
 function world.initialize(self)
   self.map:initialize()
+  self.cursor:initialize(self.map)
   self.player:initialize(self.map)
 end
 
 function world.input(self)
   self.map:input()
+  self.cursor:input()
   self.player:input()
 end
 
 function world.update(self, dt)
   self.map:update(dt)
+  self.cursor:update(dt)
   self.player:update(dt)
 
   self.time = self.time + (dt * self.speed)
@@ -28,6 +32,7 @@ end
 function world.draw(self)
   self.map:draw(function(level)
       if level == 3 then
+        self.cursor:draw()
         self.player:draw()
       end
     end)

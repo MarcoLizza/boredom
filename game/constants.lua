@@ -9,4 +9,7 @@ constants.WINDOW_TITLE = '.:: anorak ::.'
 constants.WINDOW_WIDTH = constants.SCREEN_WIDTH * constants.MAGNIFICATION_FACTOR
 constants.WINDOW_HEIGHT = constants.SCREEN_HEIGHT * constants.MAGNIFICATION_FACTOR
 
+constants.TILE_WIDTH = 16
+constants.TILE_HEIGHT = 16
+
 return constants
