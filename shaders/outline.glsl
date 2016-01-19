@@ -1,5 +1,5 @@
 // http://blogs.love2d.org/content/let-it-glow-dynamically-adding-outlines-characters
-extern vec2 _step;
+uniform vec2 _step;
 
 vec4 effect(vec4 color, sampler2D texture, vec2 texture_coords, vec2 screen_coords)
 {

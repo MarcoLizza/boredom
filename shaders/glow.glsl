@@ -1,8 +1,8 @@
 // adapted from http://www.youtube.com/watch?v=qNM0k522R7o
 
-extern vec2 _size;
-extern int samples = 4; // pixels per axis; higher = bigger glow, worse performance
-extern float quality = 2.5; // lower = smaller glow, better quality
+uniform vec2 _size;
+uniform int samples = 4; // pixels per axis; higher = bigger glow, worse performance
+uniform float quality = 2.5; // lower = smaller glow, better quality
 
 vec4 effect(vec4 colour, sampler2D tex, vec2 tc, vec2 sc)
 {
