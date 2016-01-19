@@ -3,8 +3,8 @@ local Animator = {
   animations = {},
   period = 1 / 50,
   animation = nil,
-  frame = 0,
-  elapsed = 0
+  elapsed = 0,
+  frame = nil
 }
 
 Animator.__index = Animator
@@ -16,7 +16,7 @@ end
 
 function Animator:initialize(animations, frequency)
   self.animations = animations
-  self.period = 1 / frequency
+  self.period = 1 / (frequency or 50)
 end
 
 function Animator:update(dt)
