@@ -23,7 +23,7 @@ local map = {
   has_changed = true
 }
 
-function map.initialize(self)
+function map:initialize()
   local tiles = self.tiles
 
   tiles.sheet, tiles.atlas = utils.load_atlas('assets/tileset.png', tiles.width, tiles.height)
@@ -39,10 +39,10 @@ function map.initialize(self)
   self.shader:send('_step', { 1 / tiles.sheet:getWidth(), 1 / tiles.sheet:getHeight() });
 end
 
-function map.input(self)
+function map:input()
 end
 
-function map.update(self, dt)
+function map:update(dt)
   if not self.has_changed then
     return
   end
@@ -71,7 +71,7 @@ function map.update(self, dt)
   self.has_changed = false
 end
 
-function map.draw(self, draw)
+function map:draw(draw)
   for level, batch in ipairs(self.tiles.batches) do
     if draw then
        draw(level - 1)
@@ -87,17 +87,17 @@ function map.draw(self, draw)
   end
 end
 
-function map.to_map(self, x, y)
+function map:to_map(x, y)
   local tiles = self.tiles
   return math.floor(x / tiles.width), math.floor(y / tiles.height)
 end
 
-function map.to_screen(self, x, y)
+function map:to_screen(x, y)
   local tiles = self.tiles
   return x * tiles.width, y * tiles.height
 end
 
-function map.is_walkable(self, x, y)
+function map:is_walkable(x, y)
   -- Always remember that tables indexes start from one! :\
   if self.layers.walkables[y + 1][x + 1] ~= -1 then
     return true

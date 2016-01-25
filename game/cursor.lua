@@ -69,7 +69,7 @@ function cursor:input()
     -- diagonally (if we are letting both x and y delta to be set
     -- at the same time).
     self.tweener = tweener.linear(0.25, function(ratio) 
-        return { delta_x * ratio, delta_y * ratio }
+        return { x = delta_x * ratio, y = delta_y * ratio }
       end)
   end
 end
@@ -84,11 +84,11 @@ function cursor:update(dt)
   local delta, continue = self.tweener(dt)
 
   if continue then
-    self.offset_x = delta[1]
-    self.offset_y = delta[2]
+    self.offset_x = delta.x
+    self.offset_y = delta.y
   else
-    self.x = self.x + delta[1]
-    self.y = self.y + delta[2]
+    self.x = self.x + delta.x
+    self.y = self.y + delta.y
     self.offset_x = 0
     self.offset_y = 0
     self.tweener = nil
