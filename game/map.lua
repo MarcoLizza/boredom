@@ -34,12 +34,9 @@ function map:initialize()
   for i = 1, #self.layers.levels do
     tiles.batches[i] = love.graphics.newSpriteBatch(tiles.sheet, self.width * self.height)
   end
-
-  self.shader = love.graphics.newShader('shaders/outline.glsl')
-  self.shader:send('_step', { 1 / tiles.sheet:getWidth(), 1 / tiles.sheet:getHeight() });
 end
 
-function map:input()
+function map:input(dt)
 end
 
 function map:update(dt)
@@ -78,12 +75,6 @@ function map:draw(draw)
     end    
     love.graphics.draw(batch, 0, 0, 0,
       constants.MAGNIFICATION_FACTOR, constants.MAGNIFICATION_FACTOR)
-    if level == 3 then
-      love.graphics.setShader(self.shader)
-      love.graphics.draw(batch, 0, 0, 0,
-        constants.MAGNIFICATION_FACTOR, constants.MAGNIFICATION_FACTOR)
-      love.graphics.setShader()
-    end
   end
 end
 

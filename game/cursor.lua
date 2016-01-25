@@ -32,7 +32,7 @@ function cursor:initialize(map)
   self.animator:switch_to(1)
 end
 
-function cursor:input()
+function cursor:input(dt)
   if self.tweener then
     return
   end

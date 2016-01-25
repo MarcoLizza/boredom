@@ -1,13 +1,17 @@
 local utils = require('lib.utils')
 
+local OBJECT_LAYER_INDEX = 4
+
 -- @module world
 local world = {
   map = require('game.map'),
+  items = require('game.items'),
   player = require('game.player'),
   cursor = require('game.cursor'),
   time = 8 * 60 * 60,
   speed = 48.0,
   --
+  dampener = require('lib.dampener'),
   question = nil
 }
 
@@ -15,20 +19,23 @@ function world:initialize()
   self.map:initialize()
   self.cursor:initialize(self.map)
   self.player:initialize(self.map)
+  self.items:initialize(self.player)
 end
 
-function world:input()
+function world:input(dt)
+  local passed = self.dampener:passed(dt)
+  
   if self.question then
-    if love.keyboard.isDown('x') then
---      self.player:apply(self.question_data)
+    if passed and love.keyboard.isDown('z') then
+--    self.player:apply(self.question_data)
       self.question = nil
-    elseif 'z' then
+    elseif passed and love.keyboard.isDown('x') then
       self.question = nil
     end
     return
   end
 
-  if love.keyboard.isDown('x') then
+  if passed and love.keyboard.isDown('x') then
     local x, y = self.player:pointing_to()
     local data = self.items:at(x, y)
     if data then
@@ -36,15 +43,16 @@ function world:input()
     end
   end
   
-  self.map:input()
-  self.cursor:input()
-  self.player:input()
+  self.map:input(dt)
+  self.cursor:input(dt)
+  self.player:input(dt)
 end
 
 function world:update(dt)
   self.map:update(dt)
   self.cursor:update(dt)
   self.player:update(dt)
+  self.items:update(dt)
 
   self.time = self.time + (dt * self.speed)
 end
@@ -53,8 +61,9 @@ function world:draw()
 --  love.graphics.scale(3, 3)
   
   self.map:draw(function(level)
-      if level == 3 then
+      if level == OBJECT_LAYER_INDEX then
         self.cursor:draw()
+        self.items:draw()
         self.player:draw()
       end
     end)

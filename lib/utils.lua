@@ -58,6 +58,8 @@ function utils.load_atlas(filename, frame_width, frame_height)
   local sheet = love.graphics.newImage(filename)
   local atlas = {}
 
+--  sheet:setFilter('nearest', 'nearest', 0)
+
   -- The frames are organized in the sheet in a single row-by-colums,
   -- so we can get dynamically the amount of tiles with a couple of
   -- simple division.

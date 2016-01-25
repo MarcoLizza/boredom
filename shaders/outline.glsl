@@ -9,5 +9,5 @@ vec4 effect(vec4 color, sampler2D texture, vec2 texture_coords, vec2 screen_coor
     alpha -= texture2D(texture, texture_coords + vec2(-_step.x, 0.0f)).a;
     alpha -= texture2D(texture, texture_coords + vec2(0.0f, _step.y)).a;
     alpha -= texture2D(texture, texture_coords + vec2(0.0f, -_step.y)).a;  
-    return vec4(_chroma.r, _chroma.g, _chroma.b, alpha);
+    return vec4(_chroma, alpha);
 }

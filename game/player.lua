@@ -46,11 +46,15 @@ function player:initialize(map)
   self.shader = love.graphics.newShader('shaders/modulate.glsl')
   self.shader:send('_chroma', { 0.5, 0.5, 1.0 });
 
+--  self.shader = love.graphics.newShader('shaders/outline.glsl')
+--  self.shader:send('_step', { 1 / self.sheet:getWidth(), 1 / self.sheet:getHeight() });
+--  self.shader:send('_chroma', { 0.0, 1.0, 1.0 });
+
   self.x = 128
   self.y = 128
 end
 
-function player:input()
+function player:input(dt)
   if self.tweener then
     return
   end
