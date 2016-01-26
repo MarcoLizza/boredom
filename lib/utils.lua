@@ -10,12 +10,36 @@ local utils = {
 -- nnnnnnnnMMMMNNNNAAAAEEEE
 local SECONDS_IN_MINUTE = 60
 local SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE
--- local SECONDS_IN_DAY = 26 * SECONDS_IN_HOUR
+local SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR
 
 local MORNING = 8 * SECONDS_IN_HOUR
 local NOON = 12 * SECONDS_IN_HOUR
 local AFTERNOON = 16 * SECONDS_IN_HOUR
 local EVENING = 20 * SECONDS_IN_HOUR
+
+local CONVERSION_TABLE = {
+  { scale = SECONDS_IN_DAY, description = 'day' },
+  { scale = SECONDS_IN_HOUR, description = 'hour' },
+  { scale = SECONDS_IN_MINUTE, description = 'minute' },
+  { scale = 1, description = 'second' }
+}
+
+-- Traslate a time to a printable format expression (e.g. '2 hours').
+function utils.time_to_string(time)
+  local result = {}
+
+  local remainder = math.floor(time)
+
+  for _, v in ipairs(CONVERSION_TABLE) do
+    if remainder >= v.scale then
+      local units = remainder / v.scale
+      result[#result + 1] = units .. v.description .. (units > 1 and 's' or '')
+      remainder = remainder % v.scale
+    end
+  end
+  
+  return table.concat(result, ' and ')
+end
 
 -- Formats the current game time (in floating-point seconds) to a more
 -- conveniente "HH:MM:SS" format.
@@ -35,15 +59,15 @@ end
 -- Returns a string decribing the current time of day (e.g. "noon") given
 -- the time expressed in seconds.
 function utils.time_of_day(time)
-  time = math.floor(time % 86400)
+  local hour = math.floor(time % SECONDS_IN_DAY)
 
-  if time >= MORNING and time < NOON then
+  if hour >= MORNING and hour < NOON then
     return 'morning'
-  elseif time >= NOON and time < AFTERNOON then
+  elseif hour >= NOON and hour < AFTERNOON then
     return 'noon'
-  elseif time >= AFTERNOON and time < EVENING then
+  elseif hour >= AFTERNOON and hour < EVENING then
     return 'afternoon'
-  elseif time >= EVENING then
+  elseif hour >= EVENING then
     return 'evening'
   else
     return 'night'
@@ -57,8 +81,6 @@ end
 function utils.load_atlas(filename, frame_width, frame_height)
   local sheet = love.graphics.newImage(filename)
   local atlas = {}
-
---  sheet:setFilter('nearest', 'nearest', 0)
 
   -- The frames are organized in the sheet in a single row-by-colums,
   -- so we can get dynamically the amount of tiles with a couple of

@@ -22,6 +22,13 @@ local player = {
   frame = nil,
   facing = FACING_RIGHT,
   --
+  statistics = {
+    fatigue = 0,
+    fun = 0,
+    health = 0,
+    money = 0
+  },
+  --
   tweener = nil,
   offset_x = 0,
   offset_y = 0,
@@ -149,6 +156,15 @@ function player:draw()
   if self.is_idle then
       love.graphics.setShader()
   end
+end
+
+function player:apply(features)
+  local s = self.statistics
+  
+  s.fatigue = s.fatigue + features.fatigue
+  s.fun = s.fun + features.fun
+  s.health = s.health + features.health
+  s.money = s.money + features.money
 end
 
 function player:position()
