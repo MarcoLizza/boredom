@@ -9,8 +9,7 @@ local items = {
       height = 48,
       image = 'assets/items/television.png',
       sheet = nil,
-      is_near = false,
-      is_in_front = false,
+      facings = { 'up' },
       object = {
         question = 'Would you like me to watch some TV?',
         time = 1 * 60 * 60,
@@ -29,8 +28,7 @@ local items = {
       height = 64,
       image = 'assets/items/bed.png',
       sheet = nil,
-      is_near = false,
-      is_in_front = false,
+      facings = { 'left' },
       object = {
         question = 'Should I go to bed?',
         time = 8 * 60 * 60,
@@ -62,10 +60,18 @@ function items:draw()
   end
 end
 
-function items:at(x, y)
+function items:at(x, y, facing)
   for _, item in pairs(self.items) do
     if x >= item.x and y >= item.y and x < (item.x + item.width) and y < (item.y + item.height) then
-      return item.object
+      if not facing then
+        return item.object
+      else
+        for _,v in ipairs(item.facings) do
+          if v == facing then
+            return item.object
+          end
+        end
+      end
     end
   end
   return nil

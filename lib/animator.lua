@@ -39,7 +39,7 @@ function Animator:switch_to(index, reset)
     self.frame = nil
   end
 
-  if index >= 1 and index <= #self.animations then
+  if self.animations[index] then
     self.animation = self.animations[index]
     self.frame = 1
   end

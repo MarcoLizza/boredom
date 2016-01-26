@@ -5,7 +5,7 @@ local utils = require('lib.utils')
 local map = {
   width = 20,
   height = 15,
-  layers = require('assets/tilemap'),
+  layers = require('data/tilemap'),
   viewport = {
     x = 0,
     y = 0,
@@ -95,10 +95,6 @@ function map:is_walkable(x, y)
   else
     return false
   end
-end
-
-function map:find_path(from, to)
-  local path = {}
 end
 
 return map

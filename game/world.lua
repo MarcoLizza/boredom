@@ -84,7 +84,7 @@ function world:update(dt)
 
   -- Keep the player "focus-object" updated.
   local x, y = self.player:pointing_to()
-  self.item_object = self.items:at(x, y)
+  self.item_object = self.items:at(x, y, self.player.facing)
 
   -- Advance time only when we are not asking for using input. That is
   -- the game is paused when asking for user input.

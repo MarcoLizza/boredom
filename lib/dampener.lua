@@ -1,6 +1,6 @@
 local dampener = {
   time = 0,
-  delay = 0.125
+  delay = 0.5
 }
 
 function dampener:update(dt)

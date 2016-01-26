@@ -3,11 +3,6 @@ local tweener = require('lib.tweener')
 local Animator = require('lib.animator')
 local constants = require('game.constants')
 
-local FACING_UP = 1
-local FACING_RIGHT = 2
-local FACING_LEFT = 3
-local FACING_DOWN = 4
-
 local TILE_OFFSET_Y = 4
 
 local player = {
@@ -20,7 +15,7 @@ local player = {
   map = nil,
   animator = Animator.new(),
   frame = nil,
-  facing = FACING_RIGHT,
+  facing = 'right',
   --
   statistics = {
     fatigue = 0,
@@ -43,12 +38,12 @@ function player:initialize(map)
   self.sheet, self.atlas = utils.load_atlas('assets/player.png', self.width, self.height)
 
   self.animator:initialize({
-      { 1 },
-      { 2 },
-      { 3 },
-      { 4 }
+      up = { 1 },
+      right = { 2 },
+      left = { 3 },
+      down = { 4 }
     }, 10.0)
-  self.animator:switch_to(FACING_RIGHT)
+  self.animator:switch_to('right')
 
   self.shader = love.graphics.newShader('shaders/modulate.glsl')
   self.shader:send('_chroma', { 0.5, 0.5, 1.0 });
@@ -74,22 +69,22 @@ function player:input(keys)
   if keys['left'] then
     delta_x = -constants.TILE_WIDTH
     delta_y = 0
-    facing = FACING_LEFT
+    facing = 'left'
   end
   if keys['right'] then
     delta_x = constants.TILE_WIDTH
     delta_y = 0
-    facing = FACING_RIGHT
+    facing = 'right'
   end
   if keys['up'] then
     delta_x = 0
     delta_y = -constants.TILE_HEIGHT
-    facing = FACING_UP
+    facing = 'up'
   end
   if keys['down'] then
     delta_x = 0
     delta_y = constants.TILE_HEIGHT
-    facing = FACING_DOWN
+    facing = 'down'
   end
 
   if delta_x == 0 and delta_y == 0 then
@@ -168,18 +163,18 @@ function player:apply(features)
 end
 
 function player:position()
-  return self.x, self.y
+  return self.x + self.offset_x, self.y + self.offset_y
 end
 
 function player:pointing_to()
   local x, y = self.x, self.y
-  if self.facing == FACING_UP then
+  if self.facing == 'up' then
     y = y - constants.TILE_HEIGHT
-  elseif self.facing == FACING_DOWN then
+  elseif self.facing == 'down' then
     y = y + constants.TILE_HEIGHT
-  elseif self.facing == FACING_LEFT then
+  elseif self.facing == 'left' then
     x = x - constants.TILE_WIDTH
-  elseif self.facing == FACING_RIGHT then
+  elseif self.facing == 'right' then
     x = x + constants.TILE_WIDTH
   end
   return x, y
