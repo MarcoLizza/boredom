@@ -11,7 +11,8 @@ local world = {
   speed = 48.0,
   dampener = require('lib.dampener'),
   -- INTERACTION --
-  item_object = nil
+  item_object = nil,
+  is_interacting = false
 }
 
 function world:initialize()
@@ -48,24 +49,22 @@ function world:input(dt)
 
   local keys, has_input = grab_input()
 
-  if self.item_object then
+  if self.is_interacting then
     if passed and keys['z'] then
       self.player:apply(self.item_object.features)
       self.time = self.time + self.item_object.time
-      self.item_object = nil
+      self.is_interacting = false
       self.dampener:reset()
     elseif passed and keys['x'] then
-      self.item_object = nil
+      self.is_interacting = false
       self.dampener:reset()
     end
     return
   end
   
   if passed and keys['x'] then
-    local x, y = self.player:pointing_to()
-    local item_object = self.items:at(x, y)
-    if item_object then
-      self.item_object = item_object
+    if self.item_object then
+      self.is_interacting = true
     end
     self.dampener:reset()
   end
@@ -84,12 +83,12 @@ function world:update(dt)
   self.hud:update(dt)
 
   -- Keep the player "focus-object" updated.
---  local x, y = self.player:pointing_to()
---  self.item_object = self.items:at(x, y)
+  local x, y = self.player:pointing_to()
+  self.item_object = self.items:at(x, y)
 
   -- Advance time only when we are not asking for using input. That is
   -- the game is paused when asking for user input.
-  if self.item_object then
+  if self.is_interacting then
     return
   end
 

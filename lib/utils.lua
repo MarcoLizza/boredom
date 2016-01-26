@@ -33,7 +33,7 @@ function utils.time_to_string(time)
   for _, v in ipairs(CONVERSION_TABLE) do
     if remainder >= v.scale then
       local units = remainder / v.scale
-      result[#result + 1] = units .. v.description .. (units > 1 and 's' or '')
+      result[#result + 1] = string.format('%s %s%s', units, v.description, (units > 1 and 's' or ''))
       remainder = remainder % v.scale
     end
   end

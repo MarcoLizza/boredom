@@ -23,10 +23,9 @@ function hud:draw()
   love.graphics.setColor(191, 191, 127)
   love.graphics.print(utils.format_time(world.time) .. ' (' .. utils.time_of_day(world.time) .. ')', 0, 16)
   
-  if world.item_object then
+  if world.is_interacting then
     love.graphics.setColor(127, 191, 127)
-    love.graphics.print(world.item_object.question, 0, 32)
-    love.graphics.print('(Will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 48)
+    love.graphics.print(world.item_object.question .. '(will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 32)
   end
 end
 
