@@ -36,7 +36,7 @@ function map:initialize()
   end
 end
 
-function map:input(dt)
+function map:input(keys)
 end
 
 function map:update(dt)

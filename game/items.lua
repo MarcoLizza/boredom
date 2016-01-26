@@ -12,7 +12,7 @@ local items = {
       sheet = nil,
       is_near = false,
       is_in_front = false,
-      data = {
+      object = {
         question = 'Would you like me to watch some TV?',
         time = 1 * 60 * 60,
         features = {
@@ -32,7 +32,7 @@ local items = {
       sheet = nil,
       is_near = false,
       is_in_front = false,
-      data = {
+      object = {
         question = 'Should I go to bed?',
         time = 8 * 60 * 60,
         features = {
@@ -95,7 +95,7 @@ end
 function items:at(x, y)
   for _, item in pairs(self.items) do
     if inside(x, y, item) then
-      return item.data
+      return item.object
     end
   end
   return nil

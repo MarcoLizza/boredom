@@ -32,7 +32,7 @@ function cursor:initialize(map)
   self.animator:switch_to(1)
 end
 
-function cursor:input(dt)
+function cursor:input(keys)
   if self.tweener then
     return
   end
@@ -40,19 +40,19 @@ function cursor:input(dt)
   local delta_x = 0
   local delta_y = 0
 
-  if love.keyboard.isDown('left') then
+  if keys['left'] then
     delta_x = -1
     delta_y = 0
   end
-  if love.keyboard.isDown('right') then
+  if keys['right'] then
     delta_x = 1
     delta_y = 0
   end
-  if love.keyboard.isDown('up') then
+  if keys['up'] then
     delta_x = 0
     delta_y = -1
   end
-  if love.keyboard.isDown('down') then
+  if keys['down'] then
     delta_x = 0
     delta_y = 1
   end

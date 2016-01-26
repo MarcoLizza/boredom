@@ -28,7 +28,7 @@ local player = {
     health = 0,
     money = 0
   },
-  --
+  -- MOVEMENT --
   tweener = nil,
   offset_x = 0,
   offset_y = 0,
@@ -61,7 +61,7 @@ function player:initialize(map)
   self.y = 128
 end
 
-function player:input(dt)
+function player:input(keys)
   if self.tweener then
     return
   end
@@ -71,22 +71,22 @@ function player:input(dt)
   local delta_x = 0
   local delta_y = 0
 
-  if love.keyboard.isDown('left') then
+  if keys['left'] then
     delta_x = -constants.TILE_WIDTH
     delta_y = 0
     facing = FACING_LEFT
   end
-  if love.keyboard.isDown('right') then
+  if keys['right'] then
     delta_x = constants.TILE_WIDTH
     delta_y = 0
     facing = FACING_RIGHT
   end
-  if love.keyboard.isDown('up') then
+  if keys['up'] then
     delta_x = 0
     delta_y = -constants.TILE_HEIGHT
     facing = FACING_UP
   end
-  if love.keyboard.isDown('down') then
+  if keys['down'] then
     delta_x = 0
     delta_y = constants.TILE_HEIGHT
     facing = FACING_DOWN
@@ -124,7 +124,7 @@ function player:update(dt)
   -- to be drawn.
   self.frame = self.animator:update(dt)
 
-  -- If the tweener is not, shortcut exit since we are not moving the player.
+  -- If the tweener is not set, shortcut exit since we are not moving the player.
   if not self.tweener then
     return
   end
