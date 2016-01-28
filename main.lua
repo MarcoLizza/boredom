@@ -37,11 +37,14 @@ function love.keypressed(key, scancode, isrepeat)
   end
 end
 
+
+--local _time = 0
 function love.update(dt)
   local change, index = state:update(dt)
   if change then
     switch_to(index)
   end
+--  _time = _time + dt
 end
 
 function love.draw()
@@ -49,6 +52,11 @@ function love.draw()
   love.graphics.scale(constants.MAGNIFICATION_FACTOR)
 
   state:draw()
+
+--  local alpha = (math.sin(_time * math.pi / 0.5) + 1.0) / 2.0
+--  love.graphics.setColor(255, 255, 255, alpha * 255)
+--  love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+--  love.graphics.setColor(255, 255, 255, 255)
   
   love.graphics.setColor(255, 255, 255)
   love.graphics.print('FPS: ' .. love.timer.getFPS(), 0, 0)

@@ -96,8 +96,6 @@ function world:update(dt)
 end
 
 function world:draw()
---  love.graphics.scale(3, 3)
-  
   self.map:draw(function(level)
       if level == OBJECT_LAYER_INDEX then
         self.cursor:draw()

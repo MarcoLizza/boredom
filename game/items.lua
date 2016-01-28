@@ -8,6 +8,7 @@ local items = {
       width = 3,
       height = 1,
       facings = { up = true },
+      condition = function(world) end,
       object = {
         question = 'Will I cook something to eat?',
         time = 1 * 60 * 60,
