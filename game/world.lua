@@ -8,7 +8,7 @@ local world = {
   cursor = require('game.cursor'),
   hud = require('game.hud'),
   time = 8 * 60 * 60,
-  speed = 48.0,
+  speed = 15.0,
   dampener = require('lib.dampener'),
   -- INTERACTION --
   item_object = nil,

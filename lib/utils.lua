@@ -53,7 +53,7 @@ function utils.format_time(time)
   time = math.floor(time / 60)
   local hours = time % 24
 
-  return string.format('%02d:%02d:%02d', hours, minutes, seconds)
+  return string.format('%02d:%02d', hours, minutes)
 end
 
 -- Returns a string decribing the current time of day (e.g. "noon") given
