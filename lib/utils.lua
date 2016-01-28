@@ -90,7 +90,7 @@ function utils.load_atlas(filename, frame_width, frame_height)
   for i = 1, rows do
     for j = 1, columns do
       atlas[#atlas + 1] = love.graphics.newQuad((j - 1) * frame_width, (i - 1) * frame_height,
-        frame_width, frame_width, sheet:getWidth(), sheet:getHeight())
+        frame_width, frame_height, sheet:getWidth(), sheet:getHeight())
     end
   end
   
