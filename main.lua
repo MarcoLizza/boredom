@@ -1,4 +1,5 @@
-local _world = require('game.world')
+local constants = require('game.constants')
+local world = require('game.world')
 
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
@@ -6,9 +7,9 @@ function love.load(args)
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
   -- love.graphics.setBackgroundColor(255, 255, 255)
-  local font = love.graphics.setNewFont("assets/fonts/slkscr.ttf", 16)
+  local font = love.graphics.setNewFont("assets/fonts/slkscr.ttf", 8)
 
-  _world:initialize()
+  world:initialize()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -19,13 +20,18 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-  _world:input(dt)
-  _world:update(dt)
+  world:input(dt)
+  world:update(dt)
 end
 
 function love.draw()
-  _world:draw()
+  love.graphics.push()
+  love.graphics.scale(constants.MAGNIFICATION_FACTOR)
+
+  world:draw()
 
   love.graphics.setColor(255, 255, 255)
   love.graphics.print('FPS: ' .. love.timer.getFPS(), 0, 0)
+  
+  love.graphics.pop()
 end

@@ -97,9 +97,8 @@ end
 
 function cursor:draw()
   love.graphics.draw(self.sheet, self.atlas[self.frame],
-    (self.x + self.offset_x) * constants.TILE_WIDTH * constants.MAGNIFICATION_FACTOR,
-    (self.y + self.offset_y) * constants.TILE_HEIGHT * constants.MAGNIFICATION_FACTOR,
-    0, constants.MAGNIFICATION_FACTOR, constants.MAGNIFICATION_FACTOR)
+    (self.x + self.offset_x) * constants.TILE_WIDTH,
+    (self.y + self.offset_y) * constants.TILE_HEIGHT)
 end
 
 return cursor

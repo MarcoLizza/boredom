@@ -146,8 +146,7 @@ function player:draw()
       love.graphics.setShader(self.shader)
   end
   love.graphics.draw(self.sheet, self.atlas[self.frame],
-    (self.x + self.offset_x) * 3 , (self.y + self.offset_y - TILE_OFFSET_Y) * 3,
-    0, 3, 3)
+    (self.x + self.offset_x), (self.y + self.offset_y - TILE_OFFSET_Y))
   if self.is_idle then
       love.graphics.setShader()
   end

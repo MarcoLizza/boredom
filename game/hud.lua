@@ -23,18 +23,18 @@ function hud:draw()
   
   if world.item_object then
     local x, y = world.player:position()
-    love.graphics.draw(self.sheet, self.atlas[11], x * 3, (y - 16 - 4) * 3, 0, 3, 3)
+    love.graphics.draw(self.sheet, self.atlas[11], x, (y - 16 - 4))
   end
   
   love.graphics.setColor(15, 15, 63, 127)
-  love.graphics.rectangle('fill', 0, 0, 20 * 16 * 3, 16 * 3)
+  love.graphics.rectangle('fill', 0, 0, 20 * 16, 24)
   
   love.graphics.setColor(191, 191, 127, 127)
-  love.graphics.print(utils.format_time(world.time) .. ' (' .. utils.time_of_day(world.time) .. ')', 0, 16)
+  love.graphics.print(utils.format_time(world.time) .. ' (' .. utils.time_of_day(world.time) .. ')', 0, 8)
   
   if world.is_interacting then
     love.graphics.setColor(63, 15, 63, 127)
-    love.graphics.print(world.item_object.question .. ' (will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 32)
+    love.graphics.print(world.item_object.question .. ' (will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 16)
   end
 end
 

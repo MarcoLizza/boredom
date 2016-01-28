@@ -73,8 +73,7 @@ function map:draw(draw)
     if draw then
        draw(level - 1)
     end    
-    love.graphics.draw(batch, 0, 0, 0,
-      constants.MAGNIFICATION_FACTOR, constants.MAGNIFICATION_FACTOR)
+    love.graphics.draw(batch, 0, 0)
   end
 end
 
