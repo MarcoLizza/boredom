@@ -5,6 +5,9 @@ function love.load(args)
 
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
+  -- love.graphics.setBackgroundColor(255, 255, 255)
+  local font = love.graphics.setNewFont("assets/fonts/slkscr.ttf", 16)
+
   _world:initialize()
 end
 
