@@ -23,7 +23,7 @@ function hud:draw()
   
   if world.item_object then
     local x, y = world.player:position()
-    love.graphics.draw(self.sheet, self.atlas[11], x, (y - 16 - 4))
+    love.graphics.draw(self.sheet, self.atlas[11], x, (y - 16 - 4 - 8))
   end
   
   love.graphics.setColor(15, 15, 63, 127)

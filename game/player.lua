@@ -3,13 +3,13 @@ local tweener = require('lib.tweener')
 local Animator = require('lib.animator')
 local constants = require('game.constants')
 
-local TILE_OFFSET_Y = 4
+local TILE_OFFSET_Y = 4 + 8 -- compensate also for the bigger sprite height
 
 local player = {
   x = 0,
   y = 0,
   width = 16,
-  height = 16,
+  height = 24,
   sheet = nil,
   atlas = {},
   map = nil,
@@ -38,21 +38,18 @@ function player:initialize(map)
   self.sheet, self.atlas = utils.load_atlas('assets/player.png', self.width, self.height)
 
   self.animator:initialize({
-      up = { 1 },
-      right = { 2 },
-      left = { 3 },
-      down = { 4 }
-    }, 10.0)
+      up = { 13, 14, 15, 16 },
+      right = { 5, 6, 7, 8 },
+      left = { 9, 10, 11, 12 },
+      down = { 1, 2, 3, 4 }
+    }, 8.0)
   self.animator:switch_to('right')
+  self.animator:pause()
 
   self.shader = love.graphics.newShader('shaders/modulate.glsl')
   self.shader:send('_chroma', { 0.5, 0.5, 1.0 });
 
---  self.shader = love.graphics.newShader('shaders/outline.glsl')
---  self.shader:send('_step', { 1 / self.sheet:getWidth(), 1 / self.sheet:getHeight() });
---  self.shader:send('_chroma', { 0.0, 1.0, 1.0 });
-
-  self.x = 128
+  self.x = 128 -- TODO: randomize?
   self.y = 128
 end
 
@@ -93,19 +90,25 @@ function player:input(keys)
 
   self.activity_marker = os.time()
 
-  -- A change in the direction will switch to the correct animation.
+  -- A change in the direction will switch to the correct animation. However,
+  -- the animation is initially paused, we will resume it only if the destination
+  -- tile is walkable.
   if self.facing ~= facing then
     self.animator:switch_to(facing)
+    self.animator:pause()
     self.facing = facing
   end
 
   -- Obtain the player map-coordinates
   local x, y = self.map:to_map(self.x + delta_x, self.y + delta_y)
 
+  -- If the destination tile is walkable, the start the tweening movement
+  -- and resume the animation
   if self.map:is_walkable(x, y) then
-    self.tweener = tweener.linear(0.25, function(ratio) 
+    self.tweener = tweener.linear(0.5, function(ratio) 
         return { x = delta_x * ratio, y = delta_y * ratio }
       end)
+    self.animator:resume()
   end
 end
 
@@ -117,7 +120,7 @@ function player:update(dt)
 
   -- Pump the player animation. Returns the updated atlas index of the frame
   -- to be drawn.
-  self.frame = self.animator:update(dt)
+  self.animator:update(dt)
 
   -- If the tweener is not set, shortcut exit since we are not moving the player.
   if not self.tweener then
@@ -137,18 +140,23 @@ function player:update(dt)
     self.y = self.y + offset.y
     self.offset_x = 0
     self.offset_y = 0
+    
     self.tweener = nil
+    
+    self.animator:pause()
+    self.animator:seek(1)
   end
 end
 
 function player:draw()
   if self.is_idle then
-      love.graphics.setShader(self.shader)
+    love.graphics.setShader(self.shader)
   end
-  love.graphics.draw(self.sheet, self.atlas[self.frame],
+  local frame = self.animator:get_frame()
+  love.graphics.draw(self.sheet, self.atlas[frame],
     (self.x + self.offset_x), (self.y + self.offset_y - TILE_OFFSET_Y))
   if self.is_idle then
-      love.graphics.setShader()
+    love.graphics.setShader()
   end
 end
 

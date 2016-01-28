@@ -16,8 +16,6 @@ local cursor = {
   tweener = nil,
   offset_x = 0,
   offset_y = 0,
-  --
-  frame = nil
 }
 
 
@@ -28,7 +26,7 @@ function cursor:initialize(map)
   
   self.animator:initialize({
       { 1, 2, 3, 4, 3, 2 }
-    }, 12.0)
+    }, 8.0)
   self.animator:switch_to(1)
 end
 
@@ -68,14 +66,14 @@ function cursor:input(keys)
     -- Create a vector tweener. That means we can hypotetically move
     -- diagonally (if we are letting both x and y delta to be set
     -- at the same time).
-    self.tweener = tweener.linear(0.25, function(ratio) 
+    self.tweener = tweener.linear(0.5, function(ratio) 
         return { x = delta_x * ratio, y = delta_y * ratio }
       end)
   end
 end
 
 function cursor:update(dt)
-  self.frame = self.animator:update(dt)
+  self.animator:update(dt)
 
   if not self.tweener then
     return
@@ -96,7 +94,7 @@ function cursor:update(dt)
 end
 
 function cursor:draw()
-  love.graphics.draw(self.sheet, self.atlas[self.frame],
+  love.graphics.draw(self.sheet, self.atlas[self.animator:get_frame()],
     (self.x + self.offset_x) * constants.TILE_WIDTH,
     (self.y + self.offset_y) * constants.TILE_HEIGHT)
 end
