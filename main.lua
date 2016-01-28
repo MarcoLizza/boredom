@@ -1,5 +1,19 @@
 local constants = require('game.constants')
-local world = require('game.world')
+
+local gamestates = {
+--  require('game.splash'),
+  require('game.game')
+}
+
+local state = gamestates[1]
+
+function switch_to(index)
+  if state then
+    state:leave()
+  end
+  state = gamestates[index]
+  state:enter()
+end
 
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
@@ -9,7 +23,11 @@ function love.load(args)
   -- love.graphics.setBackgroundColor(255, 255, 255)
   local font = love.graphics.setNewFont("assets/fonts/slkscr.ttf", 8)
 
-  world:initialize()
+  for _, v in ipairs(gamestates) do
+    v:initialize()
+  end
+
+  switch_to(1)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -20,16 +38,18 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-  world:input(dt)
-  world:update(dt)
+  local change, index = state:update(dt)
+  if change then
+    switch_to(index)
+  end
 end
 
 function love.draw()
   love.graphics.push()
   love.graphics.scale(constants.MAGNIFICATION_FACTOR)
 
-  world:draw()
-
+  state:draw()
+  
   love.graphics.setColor(255, 255, 255)
   love.graphics.print('FPS: ' .. love.timer.getFPS(), 0, 0)
   
