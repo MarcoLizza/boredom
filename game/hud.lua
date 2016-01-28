@@ -34,7 +34,7 @@ function hud:draw()
   
   if world.is_interacting then
     love.graphics.setColor(63, 15, 63, 127)
-    love.graphics.print(world.item_object.question .. '(will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 32)
+    love.graphics.print(world.item_object.question .. ' (will take ' .. utils.time_to_string(world.item_object.time) .. ')', 0, 32)
   end
 end
 
