@@ -20,6 +20,8 @@ function game:update(dt)
 end
 
 function game:draw()
+  -- TODO: if the time of day changes, draw a black screen with the text
+  -- big in the middle for a while.
   self.world:draw()
 end
 
