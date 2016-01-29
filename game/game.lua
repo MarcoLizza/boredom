@@ -16,7 +16,7 @@ function game:update(dt)
   self.world:input(dt)
   self.world:update(dt)
   
-  return false, nil
+  return nil
 end
 
 function game:draw()
