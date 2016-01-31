@@ -51,7 +51,7 @@ function world:input(dt)
 
   if self.is_interacting then
     if passed and keys['z'] then
-      self.player:apply(self.item_object.features)
+      self.player:apply(self.item_object.features, self.item_object.time)
       self.time = self.time + self.item_object.time
       self.is_interacting = false
       self.dampener:reset()

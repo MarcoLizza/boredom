@@ -18,10 +18,10 @@ local player = {
   facing = 'right',
   --
   statistics = {
-    fatigue = 0,
+    fatigue = 1,
     fun = 0,
-    health = 0,
-    money = 0
+    health = 3,
+    money = 2
   },
   -- MOVEMENT --
   tweener = nil,
@@ -118,6 +118,9 @@ function player:update(dt)
   local inactivity_time = os.difftime(self.activity_marker, os.time())
   self.is_idle = math.abs(inactivity_time) > 30
 
+  -- Keep the player statistics updated for time related changes.
+  self:update_statistics(dt)
+
   -- Pump the player animation. Returns the updated atlas index of the frame
   -- to be drawn.
   self.animator:update(dt)
@@ -160,13 +163,24 @@ function player:draw()
   end
 end
 
-function player:apply(features)
-  local s = self.statistics
+function player:apply(features, time)
+  local statistics = self.statistics
   
-  s.fatigue = s.fatigue + features.fatigue
-  s.fun = s.fun + features.fun
-  s.health = s.health + features.health
-  s.money = s.money + features.money
+  statistics.fatigue = statistics.fatigue + features.fatigue
+  statistics.fun = statistics.fun + features.fun
+  statistics.health = statistics.health + features.health
+  statistics.money = statistics.money + features.money
+  
+  self:update_statistics(time / 60) -- threat hours as they are realtime seconds
+end
+
+function player:update_statistics(dt)
+  local statistics = self.statistics
+
+  statistics.fatigue = statistics.fatigue + (0.010 * dt)
+  statistics.fun = statistics.fun + (-0.020 * dt)
+  statistics.health = statistics.health + (-0.005 * dt)
+  statistics.money = statistics.money + (-0.005 * dt)
 end
 
 function player:position()
