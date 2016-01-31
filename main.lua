@@ -8,12 +8,6 @@ function love.load(args)
 
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
-  -- love.graphics.setBackgroundColor(255, 255, 255)
-  local font = love.graphics.setNewFont('assets/fonts/slkscr.ttf', 8)
---  local font = love.graphics.newImageFont('assets/imagefonts/arcade_17.png', ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`\'*#=[]"')
---  local font = love.graphics.newImageFont('assets/imagefonts/silkscreen_normal_8.png', ' !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
---  love.graphics.setFont(font)
-
   -- Initializes the state-engine.
   stateful = Stateful.new()
   stateful:initialize({
@@ -39,9 +33,6 @@ function love.draw()
   love.graphics.scale(constants.MAGNIFICATION_FACTOR)
 
   stateful:draw()
-
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print('FPS: ' .. love.timer.getFPS(), 0, 0)
   
   love.graphics.pop()
 end
