@@ -53,9 +53,7 @@ function splash:initialize()
 end
 
 function splash:enter()
-  self.index = 0
-  self.delay = 0
-  self.progress = 0
+  self.index = nil
 end
 
 function splash:leave()
@@ -64,11 +62,22 @@ function splash:leave()
 end
 
 function splash:update(dt)
-  if self.progress < self.delay then
+  -- Determine if we should move to the next state. This happens if the index is
+  -- not defined or if (after advancing the progress counter) the timeout has
+  -- elapsed.
+  local change = false
+  
+  if not self.index then
+    self.index = 0
+    change = true
+  elseif self.progress < self.delay then
     self.progress = self.progress + dt
+    if self.progress >= self.delay then
+      change = true
+    end
   end
 
-  if self.progress >= self.delay then
+  if change then
     -- Advance to the next state. When the end of the sequence is reached, we
     -- need to switch to the game state.
     self.index = self.index + 1
@@ -92,6 +101,12 @@ function splash:update(dt)
 end
 
 function splash:draw()
+  -- If the state index has not been updated yet, skip and wait next
+  -- iteration.
+  if not self.index then
+    return
+  end
+  
   -- If defined, draw the background image.
   if self.image then
     love.graphics.draw(self.image, 0, 0)
