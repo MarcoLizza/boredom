@@ -41,8 +41,8 @@ local items = {
         features = {
           fatigue = 1,
           fun = 1,
-          health = 0,
-          money = -2,
+          health = 1,
+          money = -3,
         },
       },
     },
@@ -58,8 +58,8 @@ local items = {
         features = {
           fatigue = -1,
           fun = 2,
-          health = -1,
-          money = -1,
+          health = -2,
+          money = -2,
         },
       },
     },
@@ -73,8 +73,8 @@ local items = {
         question = 'Should I... a-ehm...',
         time = 0.25 * 60 * 60,
         features = {
-          fatigue = 0,
-          fun = 0,
+          fatigue = -0.5,
+          fun = 0.5,
           health = 1,
           money = 0,
         },
@@ -91,7 +91,7 @@ local items = {
         time = 0.5 * 60 * 60,
         features = {
           fatigue = -1,
-          fun = 0,
+          fun = -1,
           health = 2,
           money = -1,
         },
@@ -108,9 +108,9 @@ local items = {
         time = 8 * 60 * 60,
         features = {
           fatigue = -4,
-          fun = 0,
+          fun = -1,
           health = 3,
-          money = 0,
+          money = -2,
         },
       },
     },

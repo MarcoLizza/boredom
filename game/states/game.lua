@@ -45,7 +45,7 @@ function game:update(dt)
   world:input(dt)
   world:update(dt)
 
-  return not world.player:is_safe() and 'gameover' or nil
+  return not world.player:is_safe() and 'restart' or nil
 end
 
 function game:draw()

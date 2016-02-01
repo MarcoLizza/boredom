@@ -88,6 +88,11 @@ function utils.format_time(time, use_seconds)
   return string.format('%02d:%02d', hours, minutes)
 end
 
+--
+function utils.to_days(time)
+  return math.floor(time / SECONDS_IN_DAY)
+end
+
 -- Returns a string decribing the current time of day (e.g. "noon") given
 -- the time expressed in seconds.
 function utils.time_of_day(time)

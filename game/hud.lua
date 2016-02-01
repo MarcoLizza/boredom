@@ -43,11 +43,10 @@ function hud:initialize(world)
 
   self.sheet, self.atlas = utils.load_atlas('assets/hud.png',
     constants.TILE_WIDTH, constants.TILE_HEIGHT)
-  
+
   self.small_font = love.graphics.setNewFont('assets/fonts/slkscr.ttf', 8)
   self.normal_font = love.graphics.setNewFont('assets/fonts/victor-pixel.ttf', 10)
   self.big_font = love.graphics.setNewFont('assets/fonts/retro.ttf', 14)
-  self.fancy_font = love.graphics.setNewFont('assets/fonts/dot_digital-7.ttf', 20)
 end
 
 function hud:input(keys)
@@ -76,31 +75,25 @@ function hud:draw()
     love.graphics.draw(self.sheet, self.atlas[11], x, (y - 16 - 4 - 8))
   end
   
-  -- Diplay the current time.
-  local time = utils.format_time(world.time)
-  local width = self.fancy_font:getWidth(time)
-  local max_width = width + 4
-  love.graphics.setColor(0, 0, 0, 191)
-  love.graphics.rectangle('fill', 320 - max_width, 0, max_width, self.fancy_font:getHeight())
-  
-  love.graphics.setColor(191, 191, 127, 255)
-  love.graphics.setFont(self.fancy_font)
-  love.graphics.print(time, 320 - width - 2, 0)
-  
-  -- Display the player attributes.
+  -- Display the player attributes and time.
   local stats = string.format('FATIGUE: %d - FUN: %d - HEALTH: %d - MONEY: %d', 
     math.floor(world.player.attributes.fatigue),
     math.floor(world.player.attributes.fun),
     math.floor(world.player.attributes.health),
     math.floor(world.player.attributes.money))
 
+  local time = string.format('%s (day #%d)',
+    utils.format_time(world.time), utils.to_days(world.time) + 1)
+
   love.graphics.setColor(0, 0, 0, 191)
-  love.graphics.rectangle('fill', 0, 240 - 10, 320, 10)
+  love.graphics.rectangle('fill', 0, 240 - 8, 320, 8)
   
+  love.graphics.setFont(self.small_font)
   love.graphics.setColor(191, 191, 127, 255)
-  love.graphics.setFont(self.normal_font)
-  love.graphics.print(stats, 0, 240 - 10)
-  
+  love.graphics.print(stats, 0, 240 - 8)
+  local width = self.small_font:getWidth(time)
+  love.graphics.print(time, 320 - width, 240 - 8)
+
   -- Decide which messages to show. Either the interaction question or
   -- the current "day-time"
   local messages = nil
