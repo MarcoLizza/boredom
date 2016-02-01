@@ -31,7 +31,7 @@ local gameover = {
   dampener = Dampener.new(),
   image = nil,
   current = nil,
-  delay = 5,
+  delay = 3,
   progress = nil
 }
 
@@ -84,7 +84,7 @@ function gameover:update(dt)
 
   local keys, has_input = utils.grab_input(KEYS)
 
-  return keys['x'] and 'game' or nil
+  return keys['x'] and 'splash' or nil
 end
 
 function gameover:draw()
