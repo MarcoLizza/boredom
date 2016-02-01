@@ -73,8 +73,6 @@ function player:initialize(map)
       left = { 9, 10, 11, 12 },
       down = { 1, 2, 3, 4 }
     }, 8.0)
-  self.animator:switch_to('right')
-  self.animator:pause()
 
   self.shader = love.graphics.newShader('shaders/modulate.glsl')
   self.shader:send('_chroma', { 0.5, 0.5, 1.0 });
@@ -87,8 +85,12 @@ function player:reset()
   self.attributes.health = 3
   self.attributes.money = 2
 
-  self.x = 128 -- TODO: randomize?
-  self.y = 128
+  self.x = 17 * 16
+  self.y = 2 * 16
+  self.facing = 'down'
+
+  self.animator:switch_to(self.facing)
+  self.animator:pause()
 end
 
 function player:input(keys)
