@@ -1,36 +1,66 @@
-local utils = require('lib.utils')
-local tweener = require('lib.tweener')
-local Animator = require('lib.animator')
-local constants = require('game.constants')
+--[[
 
-local TILE_OFFSET_Y = 4 + 8 -- compensate also for the bigger sprite height
+Copyright (c) 2016 by Marco Lizza (marco.lizza@gmail.com)
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgement in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+
+]]--
+
+-- MODULE INCLUSIONS -----------------------------------------------------------
+
+local constants = require('game.constants')
+local Animator = require('lib.animator')
+local tweener = require('lib.tweener')
+local utils = require('lib.utils')
+
+-- MODULE DECLARATION ----------------------------------------------------------
 
 local player = {
   x = 0,
   y = 0,
-  width = 16,
-  height = 24,
+  width = constants.PLAYER_WIDTH,
+  height = constants.PLAYER_HEIGHT,
   sheet = nil,
   atlas = {},
   map = nil,
   animator = Animator.new(),
   frame = nil,
   facing = 'right',
-  --
-  statistics = {
-    fatigue = 1,
-    fun = 0,
-    health = 3,
-    money = 2
-  },
   -- MOVEMENT --
   tweener = nil,
   offset_x = 0,
   offset_y = 0,
-  --
+  -- ANIMATION --
   activity_marker = os.time(),
-  is_idle = false
+  is_idle = false,
+  -- PROPERTIES --
+  attributes = {
+    fatigue = nil,
+    fun = nil,
+    health = nil,
+    money = nil
+  }
 }
+
+-- MODULE CONSTANTS ------------------------------------------------------------
+
+local TILE_OFFSET_Y = 4 + 8 -- compensate also for the bigger sprite height
+
+-- MODULE FUNCTIONS ------------------------------------------------------------
 
 function player:initialize(map)
   self.map = map
@@ -48,12 +78,21 @@ function player:initialize(map)
 
   self.shader = love.graphics.newShader('shaders/modulate.glsl')
   self.shader:send('_chroma', { 0.5, 0.5, 1.0 });
+end
+
+function player:reset()
+  -- Set the initial player attributes.
+  self.attributes.fatigue = 1
+  self.attributes.fun = 0
+  self.attributes.health = 3
+  self.attributes.money = 2
 
   self.x = 128 -- TODO: randomize?
   self.y = 128
 end
 
 function player:input(keys)
+  -- While the player is moving from tile to tile, the input is disabled.
   if self.tweener then
     return
   end
@@ -118,8 +157,8 @@ function player:update(dt)
   local inactivity_time = os.difftime(self.activity_marker, os.time())
   self.is_idle = math.abs(inactivity_time) > 30
 
-  -- Keep the player statistics updated for time related changes.
-  self:update_statistics(dt)
+  -- Keep the player attributes updated for time related changes.
+  self:update_attributes(dt)
 
   -- Pump the player animation. Returns the updated atlas index of the frame
   -- to be drawn.
@@ -164,23 +203,30 @@ function player:draw()
 end
 
 function player:apply(features, time)
-  local statistics = self.statistics
+  local attributes = self.attributes
   
-  statistics.fatigue = statistics.fatigue + features.fatigue
-  statistics.fun = statistics.fun + features.fun
-  statistics.health = statistics.health + features.health
-  statistics.money = statistics.money + features.money
+  attributes.fatigue = attributes.fatigue + features.fatigue
+  attributes.fun = attributes.fun + features.fun
+  attributes.health = attributes.health + features.health
+  attributes.money = attributes.money + features.money
   
-  self:update_statistics(time / 60) -- threat hours as they are realtime seconds
+  self:update_attributes(time / 3600) -- threat hours as they are realtime half-seconds
 end
 
-function player:update_statistics(dt)
-  local statistics = self.statistics
+function player:update_attributes(dt)
+  local attributes = self.attributes
 
-  statistics.fatigue = statistics.fatigue + (0.010 * dt)
-  statistics.fun = statistics.fun + (-0.020 * dt)
-  statistics.health = statistics.health + (-0.005 * dt)
-  statistics.money = statistics.money + (-0.005 * dt)
+  attributes.fatigue = attributes.fatigue + (0.010 * dt)
+  attributes.fun = attributes.fun + (-0.020 * dt)
+  attributes.health = attributes.health + (-0.005 * dt)
+  attributes.money = attributes.money + (-0.005 * dt)
+end
+
+function player:is_safe()
+  local attributes = self.attributes
+
+  return attributes.fatigue < 10 and attributes.fun > -10 and
+    attributes.health > -10 and attributes.money > -10
 end
 
 function player:position()
@@ -201,4 +247,8 @@ function player:pointing_to()
   return x, y
 end
 
+-- END OF MODULE ---------------------------------------------------------------
+
 return player
+
+-- END OF FILE -----------------------------------------------------------------

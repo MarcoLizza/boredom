@@ -1,5 +1,32 @@
+--[[
+
+Copyright (c) 2016 by Marco Lizza (marco.lizza@gmail.com)
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgement in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+
+]]--
+
+-- MODULE DECLARATION ----------------------------------------------------------
+
 local utils = {
+  _VERSION = '0.1.0'
 }
+
+-- LOCAL CONSTANTS -------------------------------------------------------------
 
 -- The day is divided into five regions of time, that is "night", "morning",
 -- "noon", "afternoon", and "evening" according to the following diagram.
@@ -24,6 +51,8 @@ local CONVERSION_TABLE = {
   { scale = 1, description = 'second' }
 }
 
+-- MODULE FUNCTIONS ------------------------------------------------------------
+
 -- Traslate a time to a printable format expression (e.g. '2 hours').
 function utils.time_to_string(time)
   local result = {}
@@ -43,7 +72,7 @@ end
 
 -- Formats the current game time (in floating-point seconds) to a more
 -- conveniente "HH:MM:SS" format.
-function utils.format_time(time)
+function utils.format_time(time, use_seconds)
   time = math.floor(time)
   local seconds = time % 60
   
@@ -53,6 +82,9 @@ function utils.format_time(time)
   time = math.floor(time / 60)
   local hours = time % 24
 
+  if use_seconds then
+  else
+  end
   return string.format('%02d:%02d', hours, minutes)
 end
 
@@ -71,6 +103,38 @@ function utils.time_of_day(time)
     return 'evening'
   else
     return 'night'
+  end
+end
+
+-- Scan the passed list of enabled virtual keys and returns both the current
+-- pressed/release state snapshot. Also, return whether is there any pressed
+-- key in the current scan.
+function utils.grab_input(enabled)
+  local keys = {}
+
+  local has_input = false
+
+  for _, id in ipairs(enabled) do
+    keys[id] = love.keyboard.isDown(id)
+    if keys[id] then
+      has_input = true
+    end
+  end
+
+  return keys, has_input
+end
+
+-- Quick and dirty color interpolation function. Work either with tables and
+-- with numeric values.
+function utils.lerp(from, to, alpha)
+  if type(from) == 'table' then
+    local result = {}
+    for index, value in ipairs(from) do
+      result[#result + 1] = utils.lerp(value, to[index], alpha)
+    end
+    return result
+  else
+    return (to - from) * alpha + from
   end
 end
 
@@ -97,4 +161,8 @@ function utils.load_atlas(filename, frame_width, frame_height)
   return sheet, atlas
 end
 
+-- END OF MODULE ---------------------------------------------------------------
+
 return utils
+
+-- END OF FILE -----------------------------------------------------------------

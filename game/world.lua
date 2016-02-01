@@ -1,85 +1,110 @@
-local OBJECT_LAYER_INDEX = 4
+--[[
+
+Copyright (c) 2016 by Marco Lizza (marco.lizza@gmail.com)
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgement in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+
+]]--
+
+-- MODULE INCLUSIONS -----------------------------------------------------------
+
+Dampener = require('lib.dampener')
+utils = require('lib.utils')
+
+-- MODULE DECLARATION ----------------------------------------------------------
 
 -- @module world
 local world = {
   map = require('game.map'),
   items = require('game.items'),
   player = require('game.player'),
-  cursor = require('game.cursor'),
   hud = require('game.hud'),
-  time = 8 * 60 * 60,
+  dampener = Dampener.new(),
   speed = 15.0,
-  dampener = require('lib.dampener'),
+  -- SIMULATION --
+  time = nil,
   -- INTERACTION --
   item_object = nil,
   is_interacting = false
 }
 
+-- LOCAL CONSTANTS -------------------------------------------------------------
+
+local OBJECT_LAYER_INDEX = 4
+
+local KEYS = {
+  'x', 'c', 'up', 'down', 'left', 'right'
+}
+
+-- MODULE FUNCTIONS ------------------------------------------------------------
+
 function world:initialize()
   self.map:initialize()
-  self.cursor:initialize(self.map)
   self.player:initialize(self.map)
   self.items:initialize(self.player)
   self.hud:initialize(self)
+
+  self.dampener:initialize(0.5)
 end
 
-local function grab_input()
-  local keys = {}
-  keys['z'] = love.keyboard.isDown('z')
-  keys['x'] = love.keyboard.isDown('x')
-  keys['up'] = love.keyboard.isDown('up')
-  keys['down'] = love.keyboard.isDown('down')
-  keys['left'] = love.keyboard.isDown('left')
-  keys['right'] = love.keyboard.isDown('right')
-  
-  local has_input = false
-  for _,v in pairs(keys) do
-    if v then
-      has_input = true
-      break
-    end
-  end
-  
-  return keys, has_input
+function world:reset()
+  self.dampener:reset()
+
+  self.time = 8 * 60 * 60 -- game start a 8 'o clock (AM)
+
+  self.player:reset()
 end
 
 function world:input(dt)
   self.dampener:update(dt)
   local passed = self.dampener:passed()
 
-  local keys, has_input = grab_input()
+  local keys, has_input = utils.grab_input(KEYS)
 
   if self.is_interacting then
-    if passed and keys['z'] then
+    if passed and keys['x'] then
       self.player:apply(self.item_object.features, self.item_object.time)
       self.time = self.time + self.item_object.time
       self.is_interacting = false
       self.dampener:reset()
-    elseif passed and keys['x'] then
+    elseif passed and keys['c'] then
       self.is_interacting = false
       self.dampener:reset()
     end
     return
   end
-  
+
   if passed and keys['x'] then
     if self.item_object then
       self.is_interacting = true
     end
     self.dampener:reset()
   end
-  
+
   self.map:input(keys)
-  self.cursor:input(keys)
+  self.items:input(keys)
   self.player:input(keys)
-  self.hud:input(dt)
+  self.hud:input(keys)
 end
 
 function world:update(dt)
   self.map:update(dt)
-  self.cursor:update(dt)
+  self.items:update(dt)
   self.player:update(dt)
-  self.items:update(dt) -- items are updater *after* the player
   self.hud:update(dt)
 
   -- Keep the player "focus-object" updated.
@@ -98,7 +123,6 @@ end
 function world:draw()
   self.map:draw(function(level)
       if level == OBJECT_LAYER_INDEX then
-        self.cursor:draw()
         self.items:draw()
         self.player:draw()
       end
@@ -107,4 +131,8 @@ function world:draw()
   self.hud:draw()
 end
 
+-- END OF MODULE ---------------------------------------------------------------
+
 return world
+
+-- END OF FILE -----------------------------------------------------------------
