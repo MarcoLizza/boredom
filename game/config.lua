@@ -1,6 +1,6 @@
 return {
   debug = {
-    fps = true
+    fps = false
   },
   display = {
     scale = 3
